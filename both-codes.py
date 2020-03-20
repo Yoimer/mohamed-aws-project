@@ -10,9 +10,6 @@ from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
 import busio
 import adafruit_adxl34x
 
-import re
-
-
 i2c_bus = board.I2C()
 ina219 = INA219(i2c_bus)
 print("ina219 test")
@@ -44,17 +41,29 @@ while True:
     current = ina219.current  # current in mA
 
     # INA219 measure bus voltage on the load side. So PSU voltage = bus_voltage + shunt_voltage
-    print("PSU Voltage:   {:6.3f} V".format(bus_voltage + shunt_voltage))
-    print("Shunt Voltage: {:9.6f} V".format(shunt_voltage))
-    print("Load Voltage:  {:6.3f} V".format(bus_voltage))
-    print("Current:       {:9.6f} A".format(current / 1000))
-    print("")
-    # print("%f %f %f"%accelerometer.acceleration) #0.078453 -0.470719 10.159689
-    # makes accelerometer values as a list
+
+    # saves sensor data in list adding a new line for each value
+    list_to_file = []
+    temp = "PSU Voltage:   {:6.3f} V".format(bus_voltage + shunt_voltage) + "\r\n"
+    list_to_file.append(temp)
+    temp = "Shunt Voltage: {:9.6f} V".format(shunt_voltage) + "\r\n"
+    list_to_file.append(temp)
+    temp = "Load Voltage:  {:6.3f} V".format(bus_voltage) + "\r\n"
+    list_to_file.append(temp)
+    temp = "Current:       {:9.6f} A".format(current / 1000) + "\r\n"
+    list_to_file.append(temp)
     xyz = ("%f %f %f"%accelerometer.acceleration).split()
-    print("")
-    print("Accelerometer Values: ")
-    print('Coordinate X: {} Coordinate Y: {} Coordinate Z: {}'.format(xyz[0], xyz[1], xyz[2]))
-    print("")
+    temp = 'Coordinate X: {} Coordinate Y: {} Coordinate Z: {}'.format(xyz[0], xyz[1], xyz[2]) + "\r\n"
+    list_to_file.append(temp)
+
+    print("Saving data in file")
+    time.sleep(2)
+
+    # file that saves all sensor values
+    f = open("sensors.txt", "w+")
+    for i in range(0, len(list_to_file)):
+        print(list_to_file[i])
+        f.write(list_to_file[i])
+    f.close()
 
     time.sleep(2)
