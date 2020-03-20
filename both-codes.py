@@ -10,6 +10,9 @@ from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
 import busio
 import adafruit_adxl34x
 
+import re
+
+
 i2c_bus = board.I2C()
 ina219 = INA219(i2c_bus)
 print("ina219 test")
@@ -46,5 +49,12 @@ while True:
     print("Load Voltage:  {:6.3f} V".format(bus_voltage))
     print("Current:       {:9.6f} A".format(current / 1000))
     print("")
-    print("%f %f %f"%accelerometer.acceleration)
+    # print("%f %f %f"%accelerometer.acceleration) #0.078453 -0.470719 10.159689
+    # makes accelerometer values as a list
+    xyz = ("%f %f %f"%accelerometer.acceleration).split()
+    print("")
+    print("Accelerometer Values: ")
+    print('Coordinate X: {} Coordinate Y: {} Coordinate Z: {}'.format(xyz[0], xyz[1], xyz[2]))
+    print("")
+
     time.sleep(2)
