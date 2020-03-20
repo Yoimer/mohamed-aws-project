@@ -60,7 +60,7 @@ while True:
     time.sleep(2)
 
     # file that saves all sensor values
-    f = open("sensors.txt", "w+")
+    f = open("sensors.txt", "a+")
     for i in range(0, len(list_to_file)):
         print(list_to_file[i])
         f.write(list_to_file[i])
