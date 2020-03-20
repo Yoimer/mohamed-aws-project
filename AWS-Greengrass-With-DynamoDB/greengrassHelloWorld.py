@@ -1,64 +1,97 @@
-#
-# Copyright 2010-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-#
-
-# greengrassHelloWorld.py
-# Demonstrates a simple publish to a topic using Greengrass core sdk
-# This lambda function will retrieve underlying platform information and send
-# a hello world message along with the platform information to the topic
-# 'hello/world'. The function will sleep for five seconds, then repeat.
-# Since the function is long-lived it will run forever when deployed to a
-# Greengrass core.  The handler will NOT be invoked in our example since
-# the we are executing an infinite loop.
-
-import logging
-import platform
-import sys
-from threading import Timer
-
 import greengrasssdk
+import platform
+from threading import Timer
+import boto3
+import logging
+from datetime import datetime
+from random import *
+from botocore.exceptions import ClientError
 
-# Setup logging to stdout
-logger = logging.getLogger(__name__)
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 # Creating a greengrass core sdk client
-client = greengrasssdk.client("iot-data")
+client = greengrasssdk.client('iot-data')
 
 # Retrieving platform information to send from Greengrass Core
 my_platform = platform.platform()
 
 
-# When deployed to a Greengrass core, this code will be executed immediately
-# as a long-lived lambda function.  The code will enter the infinite while
-# loop below.
-# If you execute a 'test' on the Lambda Console, this test will fail by
-# hitting the execution timeout of three seconds.  This is expected as
-# this function never returns a result.
+dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
+tableName = "receiveData1"
+
+dynamodb_client = boto3.client('dynamodb')
+existing_tables = dynamodb_client.list_tables()['TableNames']
+
+try:
+    table = dynamodb.create_table(
+        TableName=tableName,
+        KeySchema=[
+            {
+                'AttributeName': 'Raspberry_Id', 
+                'KeyType': 'HASH'  #Partition key
+            }
+        ],
+        AttributeDefinitions=[
+            {
+                'AttributeName': 'Raspberry_Id',
+                'AttributeType': 'S'
+            }
+        ],
+        ProvisionedThroughput={
+            'ReadCapacityUnits': 5,
+            'WriteCapacityUnits': 5
+        }
+    )
+
+    # Wait until the table exists.
+    table.meta.client.get_waiter('table_exists').wait(TableName=tableName)
+except ClientError as e:
+    if e.response['Error']['Code'] == 'ResourceInUseException':
+        print("Table already created")
+    else:
+        raise e
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
 
 
 def greengrass_hello_world_run():
-    try:
-        if not my_platform:
-            client.publish(
-                topic="hello/world", queueFullPolicy="AllOrException", payload="Hello world! Sent from Greengrass Core."
+
+    f=open("/home/pi/sensors.txt","r")
+    receiveddata=f.read()
+    f.close()
+
+    client.publish(
+        topic='get/sensors',
+        # payload='Data is :{}'.format(receiveddata))
+        payload='{}'.format(receiveddata))
+    table = dynamodb.Table(tableName)
+    if tableName not in existing_tables:
+        table.put_item(
+        Item={
+            'Raspberry_Id':'0000000080808080',
+            'Time':str(datetime.utcnow()),
+            'Received_Data':str(receiveddata),
+            }
+        )
+    else:
+        table.update_item(
+                Key={
+                    'Raspberry_Id':'0000000080808080',
+                },
+            UpdateExpression='SET Received_Data = :val1',
+                ExpressionAttributeValues={
+                    ':val1': str(receiveddata)
+                }
             )
-        else:
-            client.publish(
-                topic="hello/world",
-                queueFullPolicy="AllOrException",
-                payload="Hello world! Sent from " "Greengrass Core running on platform: {}".format(my_platform),
-            )
-    except Exception as e:
-        logger.error("Failed to publish message: " + repr(e))
 
     # Asynchronously schedule this function to be run again in 5 seconds
     Timer(5, greengrass_hello_world_run).start()
 
 
 # Start executing the function above
-greengrass_hello_world_run()
 
+greengrass_hello_world_run()
 
 # This is a dummy handler and will not be invoked
 # Instead the code above will be executed in an infinite loop for our example
