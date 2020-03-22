@@ -14,6 +14,10 @@ i2c_bus = board.I2C()
 ina219 = INA219(i2c_bus)
 print("ina219 test")
 
+
+# path libraries
+import os.path
+
 # display some of the advanced field (just to test)
 print("Config register:")
 print("  bus_voltage_range:    0x%1X" % ina219.bus_voltage_range)
@@ -42,28 +46,62 @@ while True:
 
     # INA219 measure bus voltage on the load side. So PSU voltage = bus_voltage + shunt_voltage
 
-    # saves sensor data in list adding a new line for each value
-    list_to_file = []
-    temp = "PSU Voltage:   {:6.3f} V".format(bus_voltage + shunt_voltage) + "\r\n"
-    list_to_file.append(temp)
-    temp = "Shunt Voltage: {:9.6f} V".format(shunt_voltage) + "\r\n"
-    list_to_file.append(temp)
-    temp = "Load Voltage:  {:6.3f} V".format(bus_voltage) + "\r\n"
-    list_to_file.append(temp)
-    temp = "Current:       {:9.6f} A".format(current / 1000) + "\r\n"
-    list_to_file.append(temp)
-    xyz = ("%f %f %f"%accelerometer.acceleration).split()
-    temp = 'Coordinate X: {} Coordinate Y: {} Coordinate Z: {}'.format(xyz[0], xyz[1], xyz[2]) + "\r\n"
-    list_to_file.append(temp)
-
     print("Saving data in file")
     time.sleep(2)
 
-    # file that saves all sensor values
-    f = open("sensors.txt", "a+")
-    for i in range(0, len(list_to_file)):
-        print(list_to_file[i])
-        f.write(list_to_file[i])
-    f.close()
+    # saves sensor data in list
+    list_to_file = []
+
+    # bus_voltage + shunt_voltage
+    temp = "{:6.3f}".format(bus_voltage + shunt_voltage) + ","
+    list_to_file.append(temp)
+
+    # shunt_voltage
+    temp = "{:9.6f}".format(shunt_voltage) + ","
+    list_to_file.append(temp)
+
+    # bus_voltage
+    temp = "{:6.3f}".format(bus_voltage) + ","
+    list_to_file.append(temp)
+
+    # current
+    temp = "{:9.6f}".format(current / 1000) + ","
+    list_to_file.append(temp)
+
+    # coordinates
+    xyz = ("%f %f %f"%accelerometer.acceleration).split()
+
+    # coordinate x
+    temp = (xyz[0]) + ","
+    list_to_file.append(temp)
+
+    # coordinate y
+    temp = (xyz[1]) + ","
+    list_to_file.append(temp)
+
+    # coordinate x
+    temp = (xyz[2]) + "\r\n"
+    list_to_file.append(temp)
+
+    headers = "PSU-Voltage(V),Shunt-Voltage(V),Load-Voltage(V),Current(A),Coordinate-X,Coordinate-Y,Coordinate-Z" + "\r\n"
+
+    # checks if file already exists
+    if(os.path.isfile('/home/pi/sensors.csv')):
+        # adds only new values to file
+        print("file exists already")
+        f = open("sensors.csv", "a+")
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
+    else:
+        # creates file including headers
+        print("file does not exist")
+        f = open("sensors.csv", "a+")
+        f.write(headers)
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
 
     time.sleep(2)
