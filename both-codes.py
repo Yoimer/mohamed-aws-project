@@ -68,6 +68,10 @@ while True:
     temp = "{:9.6f}".format(current / 1000) + ","
     list_to_file.append(temp)
 
+    # power
+    temp = ("{:6.3f}".format(current / 1000) * 12) + ","
+    list_to_file.append(temp)
+
     # coordinates
     xyz = ("%f %f %f"%accelerometer.acceleration).split()
 
@@ -83,7 +87,7 @@ while True:
     temp = (xyz[2]) + "\r\n"
     list_to_file.append(temp)
 
-    headers = "PSU-Voltage(V),Shunt-Voltage(V),Load-Voltage(V),Current(A),Coordinate-X,Coordinate-Y,Coordinate-Z" + "\r\n"
+    headers = "PSU-Voltage(V),Shunt-Voltage(V),Bus-Voltage(V),Current(A),Power(W),Coordinate-X,Coordinate-Y,Coordinate-Z" + "\r\n"
 
     # checks if file already exists
     if(os.path.isfile('/home/pi/sensors.csv')):
