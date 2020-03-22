@@ -46,8 +46,17 @@ while True:
 
     # INA219 measure bus voltage on the load side. So PSU voltage = bus_voltage + shunt_voltage
 
-    print("Saving data in file")
+    print("PSU Voltage:   {:6.3f} V".format(bus_voltage + shunt_voltage))
+    print("Shunt Voltage: {:9.6f} V".format(shunt_voltage))
+    print("Load Voltage:  {:6.3f} V".format(bus_voltage))
+    print("Current:       {:9.6f} A".format(current / 1000))
+    print("Power:          {:6.3f} W".format(current / 1000 * 12))
+    xyz = ("%f %f %f"%accelerometer.acceleration).split()
+    print('Coordinate X: {} Coordinate Y: {} Coordinate Z: {}'.format(xyz[0], xyz[1], xyz[2]))
+    print("")
+    print("Saving data in file, please wait...")
     time.sleep(2)
+    print("")
 
     # saves sensor data in list
     list_to_file = []
@@ -92,7 +101,7 @@ while True:
     # checks if file already exists
     if(os.path.isfile('/home/pi/sensors.csv')):
         # adds only new values to file
-        print("file exists already")
+        # print("file exists already")
         f = open("sensors.csv", "a+")
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
@@ -100,7 +109,7 @@ while True:
         f.close()
     else:
         # creates file including headers
-        print("file does not exist")
+        # print("file does not exist")
         f = open("sensors.csv", "a+")
         f.write(headers)
         for i in range(0, len(list_to_file)):
