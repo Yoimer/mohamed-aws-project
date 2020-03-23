@@ -18,6 +18,10 @@ print("ina219 test")
 # path libraries
 import os.path
 
+# time libraries
+from datetime import datetime
+
+
 # display some of the advanced field (just to test)
 print("Config register:")
 print("  bus_voltage_range:    0x%1X" % ina219.bus_voltage_range)
@@ -58,8 +62,22 @@ while True:
     time.sleep(2)
     print("")
 
+    
+    # datetime object containing current date and time
+    now = datetime.now()
+
     # saves sensor data in list
     list_to_file = []
+
+    # date and time of reading
+
+    # day/month/year
+    temp = now.strftime("%d/%m/%Y") + ","
+    list_to_file.append(temp)
+
+    # hour/minute/second
+    temp = now.strftime("%H:%M:%S") + ","
+    list_to_file.append(temp)
 
     # bus_voltage + shunt_voltage
     temp = "{:6.3f}".format(bus_voltage + shunt_voltage) + ","
@@ -96,7 +114,7 @@ while True:
     temp = (xyz[2]) + "\r\n"
     list_to_file.append(temp)
 
-    headers = "PSU-Voltage(V),Shunt-Voltage(V),Bus-Voltage(V),Current(A),Power(W),Coordinate-X,Coordinate-Y,Coordinate-Z" + "\r\n"
+    headers = "Date,Time,PSU-Voltage(V),Shunt-Voltage(V),Bus-Voltage(V),Current(A),Power(W),Coordinate-X,Coordinate-Y,Coordinate-Z" + "\r\n"
 
     # checks if file already exists
     if(os.path.isfile('/home/pi/sensors.csv')):
