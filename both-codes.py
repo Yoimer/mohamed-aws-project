@@ -50,9 +50,10 @@ while True:
 
     # INA219 measure bus voltage on the load side. So PSU voltage = bus_voltage + shunt_voltage
 
-    print("PSU Voltage:   {:6.3f} V".format(bus_voltage + shunt_voltage))
-    print("Shunt Voltage: {:9.6f} V".format(shunt_voltage))
-    print("Load Voltage:  {:6.3f} V".format(bus_voltage))
+    # print("PSU Voltage:   {:6.3f} V".format(bus_voltage + shunt_voltage))
+    # print("Shunt Voltage: {:9.6f} V".format(shunt_voltage))
+    # print("Load Voltage:  {:6.3f} V".format(bus_voltage))
+    print("Load Voltage:  {:6.3f} V".format(12.0))
     print("Current:       {:9.6f} A".format(current / 1000))
     print("Power:          {:6.3f} W".format(current / 1000 * 12))
     xyz = ("%f %f %f"%accelerometer.acceleration).split()
@@ -80,15 +81,19 @@ while True:
     list_to_file.append(temp)
 
     # bus_voltage + shunt_voltage
-    temp = "{:6.3f}".format(bus_voltage + shunt_voltage) + ","
-    list_to_file.append(temp)
+    # temp = "{:6.3f}".format(bus_voltage + shunt_voltage) + ","
+    # list_to_file.append(temp)
 
     # shunt_voltage
-    temp = "{:9.6f}".format(shunt_voltage) + ","
-    list_to_file.append(temp)
+    # temp = "{:9.6f}".format(shunt_voltage) + ","
+    # list_to_file.append(temp)
 
     # bus_voltage
-    temp = "{:6.3f}".format(bus_voltage) + ","
+    # temp = "{:6.3f}".format(bus_voltage) + ","
+    # list_to_file.append(temp)
+
+    # load voltage
+    temp = "{:6.3f}".format(12.0) + ","
     list_to_file.append(temp)
 
     # current
@@ -110,11 +115,12 @@ while True:
     temp = (xyz[1]) + ","
     list_to_file.append(temp)
 
-    # coordinate x
+    # coordinate z
     temp = (xyz[2]) + "\r\n"
     list_to_file.append(temp)
 
-    headers = "Date,Time,PSU-Voltage(V),Shunt-Voltage(V),Bus-Voltage(V),Current(A),Power(W),Coordinate-X,Coordinate-Y,Coordinate-Z" + "\r\n"
+    # headers = "Date,Time,PSU-Voltage(V),Shunt-Voltage(V),Bus-Voltage(V),Current(A),Power(W),Coordinate-X,Coordinate-Y,Coordinate-Z" + "\r\n"
+    headers = "Date,Time,Load-Voltage(V),Current(A),Power(W),Coordinate-X,Coordinate-Y,Coordinate-Z" + "\r\n"
 
     # checks if file already exists
     if(os.path.isfile('/home/pi/sensors.csv')):
