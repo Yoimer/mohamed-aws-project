@@ -96,7 +96,7 @@ while True:
     list_to_file.append(temp)
 
     # power
-    temp = ("{:6.3f}".format(current / 1000) * 12) + ","
+    temp = "{:6.3f}".format((current / 1000) * 12) + ","
     list_to_file.append(temp)
 
     # coordinates
