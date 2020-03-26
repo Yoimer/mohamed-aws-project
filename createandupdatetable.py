@@ -14,6 +14,10 @@
 #
 from __future__ import print_function # Python 2/3 compatibility
 import boto3
+from datetime import datetime
+import json
+import time
+
 
 # dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
 
@@ -56,7 +60,36 @@ if tableName not in existing_tables:
     )
     print("Table status:", table.table_status)
     print("Table {} created successfully".format(tableName))
+    time.sleep(1)
+    print("Putting items on {} table, please wait...".format(tableName))
+    time.sleep(5)
+    table = dynamodb.Table(tableName)
+    # datetime object containing current date and time
+    now = datetime.now()
+    response = table.put_item(
+        Item={
+            'current': "0.1762",
+            'load-voltage': "12",
+            'time': str(now.strftime("%H:%M:%S"))
+        }
+    )
+    print("PutItem succeeded:")
+    print(json.dumps(response, indent=4))
 
 # add new values to the table
 else:
     print("Table {} already exists".format(tableName))
+    print("Putting new items on {} table, please wait...".format(tableName))
+    time.sleep(1)
+    table = dynamodb.Table(tableName)
+    # datetime object containing current date and time
+    now = datetime.now()
+    response = table.put_item(
+       Item={
+            'current': "0.1185",
+            'load-voltage': "12",
+            'time': str(now.strftime("%H:%M:%S"))
+        }
+    )
+    # print("PutItem succeeded:")
+    print(json.dumps(response, indent=4))
