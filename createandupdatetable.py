@@ -70,6 +70,11 @@ if tableName not in existing_tables:
         Item={
             'current': "0.1762",
             'load-voltage': "12",
+            'power': "2.114",
+            "coordinate-x": "0.078453",
+            "coordinate-y": "-0.509946",
+            "coordinate-z": "10.002783",
+            "date": str(now.strftime("%d/%m/%Y")),
             'time': str(now.strftime("%H:%M:%S"))
         }
     )
@@ -85,11 +90,16 @@ else:
     # datetime object containing current date and time
     now = datetime.now()
     response = table.put_item(
-       Item={
-            'current': "0.1185",
+        Item={
+            'current': "0.1587",
             'load-voltage': "12",
+            'power': "2.114",
+            "coordinate-x": "0.078453",
+            "coordinate-y": "-0.509946",
+            "coordinate-z": "10.002783",
+            "date": str(now.strftime("%d/%m/%Y")),
             'time': str(now.strftime("%H:%M:%S"))
         }
     )
-    # print("PutItem succeeded:")
+    print("PutItem succeeded:")
     print(json.dumps(response, indent=4))
