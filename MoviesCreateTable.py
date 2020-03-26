@@ -19,34 +19,44 @@ import boto3
 
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
 
+tableName = "sensors"
+dynamodb_client = boto3.client('dynamodb')
+existing_tables = dynamodb_client.list_tables()['TableNames']
 
-table = dynamodb.create_table(
-    TableName='sensors',
-    KeySchema=[
-        {
-            'AttributeName': 'current',
-            'KeyType': 'HASH'  #Partition key
-        },
-        {
-            'AttributeName': 'load-voltage',
-            'KeyType': 'RANGE'  #Sort key
+# if tableName does not exist already, just create it
+if tableName not in existing_tables:
+    print("Creating table, {} please wait...".format(tableName))
+    table = dynamodb.create_table(
+        TableName=tableName,
+        KeySchema=[
+            {
+                'AttributeName': 'current',
+                'KeyType': 'HASH'  #Partition key
+            },
+            {
+                'AttributeName': 'load-voltage',
+                'KeyType': 'RANGE'  #Sort key
+            }
+        ],
+        AttributeDefinitions=[
+            {
+                'AttributeName': 'current',
+                'AttributeType': 'S'
+            },
+            {
+                'AttributeName': 'load-voltage',
+                'AttributeType': 'S'
+            },
+
+        ],
+        ProvisionedThroughput={
+            'ReadCapacityUnits': 10,
+            'WriteCapacityUnits': 10
         }
-    ],
-    AttributeDefinitions=[
-        {
-            'AttributeName': 'current',
-            'AttributeType': 'S'
-        },
-        {
-            'AttributeName': 'load-voltage',
-            'AttributeType': 'S'
-        },
+    )
+    print("Table status:", table.table_status)
+    print("Table {} created successfully".format(tableName))
 
-    ],
-    ProvisionedThroughput={
-        'ReadCapacityUnits': 10,
-        'WriteCapacityUnits': 10
-    }
-)
-
-print("Table status:", table.table_status)
+# add new values to the table
+else:
+    print("Table {} already exists".format(tableName))
