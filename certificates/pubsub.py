@@ -37,12 +37,9 @@ def read_temp_humd():
     # JSON data:
     # dictionary to be pushed  
     json_to_push = {
-        "id": "pizerohome",
+        "id": "pizero",
         "temp": 0.0,
-        "humid": 0.0,
-        "pres": 95559,
-        "CO": 30.34,
-        "LPG": 3.58
+        "humid": 0.0
     }
 
     json_to_push = json.dumps(json_to_push, indent=4)
@@ -57,7 +54,17 @@ def read_temp_humd():
     z.update(y) 
       
     # the result is a JSON string: 
-    print(json.dumps(z, indent=4)) 
+    print(json.dumps(z, indent=4))
+    print(type(json.dumps(z, indent=4)))
+
+    # this is what's sent
+    '''
+    {
+        "id": "pizero",
+        "temp": 100.80,
+        "humid": 200.70
+    }
+    '''
 
     return json.dumps(z, indent=4)
 
