@@ -2,3 +2,7 @@ pizerohome
 python3 pubsub.py --endpoint adl1l4c4wm55l-ats.iot.us-west-2.amazonaws.com --root-ca root.cert.pem --cert dbed486156-certificate.pem.crt --key dbed486156-private.pem.key
 
 $aws/things/sensors/shadow/update
+
+python3 pub_sub_all_sensors.py --endpoint adl1l4c4wm55l-ats.iot.us-west-2.amazonaws.com --root-ca root.cert.pem --cert dbed486156-certificate.pem.crt --key dbed486156-private.pem.key
+
+$aws/things/sensors/shadow/update
