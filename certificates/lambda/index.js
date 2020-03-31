@@ -8,15 +8,15 @@ exports.handler = async (event) => {
 
     console.log('Received IoT event:', JSON.stringify(event, null, 2))
 
-    // let payload = {
-    //     id: new Date(event.time),
-    //     sensor_value: event.sensor_a0
-    // }
-
     let payload = {
-        id: event.id ,
-        temperature: event.temp,
-        humidity: event.humid
+        time: event.time,
+        current: event.current,
+        load_voltage: event.load_voltage,
+        power: event.power,
+        coordinate_x: event.coordinate_x,
+        coordinate_y: event.coordinate_y,
+        coordinate_z: event.coordinate_z,
+        date: event.date
     }
 
     let params = {

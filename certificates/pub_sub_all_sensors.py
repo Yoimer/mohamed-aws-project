@@ -76,11 +76,11 @@ def read_all_sensors():
     json_to_push = {
         'time': str(now.strftime("%H:%M:%S")),  # hour/minute/second
         'current': "{:9.6f}".format(current / 1000),
-        'load-voltage': "{:6.3f}".format(12.0),
+        'load_voltage': "{:6.3f}".format(12.0),
         'power': "{:6.3f}".format((current / 1000) * 12),
-        "coordinate-x": xyz[0],
-        "coordinate-y": xyz[1],
-        "coordinate-z": xyz[2],
+        "coordinate_x": xyz[0],
+        "coordinate_y": xyz[1],
+        "coordinate_z": xyz[2],
         "date": str(now.strftime("%d/%m/%Y")) # day/month/year
     }
     print(json.dumps(json_to_push, indent=4))
