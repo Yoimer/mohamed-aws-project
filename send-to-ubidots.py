@@ -38,7 +38,7 @@ ina219.bus_voltage_range = BusVoltageRange.RANGE_16V
 i2c = busio.I2C(board.SCL, board.SDA)
 accelerometer = adafruit_adxl34x.ADXL345(i2c)
 
-TOKEN = "BBFF-7w8odlanUiGHIGM6x2R7oziemqeRwq"  # Put your TOKEN here
+TOKEN = "BBFF-E7NmR6i3t5pRarDr0CtWvcIEftr7Qh"  # Put your TOKEN here
 DEVICE_LABEL = "machine"  # Put your device label here
 
 
