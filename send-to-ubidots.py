@@ -18,7 +18,26 @@ i2c_bus = board.I2C()
 ina219 = INA219(i2c_bus)
 print("ina219 test")
 
+# date libraries
 from datetime import datetime
+
+# ubidots libraries
+from ubidots import ApiClient
+
+# gpio libraries
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
+# set pin 19 as output
+GPIO.setup(19,GPIO.OUT)
+
+# connects with ubidots
+try:
+    api = ApiClient("BBFF-982de989b68eea12a9f5849cb1b1f8fa442")
+    fan = api.get_variable('5e8a52401d8472689db0cd41')
+except:
+    print("Can't connect to ubidots")
 
 # display some of the advanced field (just to test)
 print("Config register:")
@@ -38,7 +57,7 @@ ina219.bus_voltage_range = BusVoltageRange.RANGE_16V
 i2c = busio.I2C(board.SCL, board.SDA)
 accelerometer = adafruit_adxl34x.ADXL345(i2c)
 
-TOKEN = "BBFF-E7NmR6i3t5pRarDr0CtWvcIEftr7Qh"  # Put your TOKEN here
+TOKEN = "BBFF-8egaq81Nwl5g1wkivmFEFI7I2wasuh"  # Put your TOKEN here
 DEVICE_LABEL = "machine"  # Put your device label here
 
 
@@ -142,6 +161,16 @@ def main():
     post_request(payload)
     print("[INFO] finished")
 
+    # fan control section
+    latest_switch_state = fan.get_values(1)
+    if(latest_switch_state[0]['value'] == 1.0):
+        # turn fan on
+        print ("Turning Fan ON")
+        GPIO.output(19,GPIO.HIGH)
+    elif(latest_switch_state[0]['value'] == 0.0):
+        # turn fan off
+        print ("Fan is OFF")
+        GPIO.output(19,GPIO.LOW)
 
 if __name__ == '__main__':
     while (True):
