@@ -48,8 +48,9 @@ VARIABLE_LABEL_3 = "Power"  # Put your third variable label here
 VARIABLE_LABEL_4 = "Coordinate-X" # Put your fourth variable label here
 VARIABLE_LABEL_5 = "Coordinate-Y" # Put your fifth variable label here
 VARIABLE_LABEL_6 = "Coordinate-Z" # Put your sixth variable label here
+VARIABLE_LABEL_7 = "Fan State" # Put your seventh variable label here
 
-def build_payload(variable_1, variable_2, variable_3, variable_4, variable_5, variable_6):
+def build_payload(variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7):
 
     bus_voltage = ina219.bus_voltage  # voltage on V- (load side)
     shunt_voltage = ina219.shunt_voltage  # voltage between V+ and V- across the shunt
@@ -88,6 +89,12 @@ def build_payload(variable_1, variable_2, variable_3, variable_4, variable_5, va
     # coordinate z
     value_6 = (xyz[2])
 
+    # if current >= 0.1 fan is on, else is off
+    if(value_2 >= 0.1):
+        value_7 = 1
+    else:
+        value_7 = 0
+
 
     payload = {
         variable_1: value_1,
@@ -95,7 +102,8 @@ def build_payload(variable_1, variable_2, variable_3, variable_4, variable_5, va
         variable_3: value_3,
         variable_4: value_4,
         variable_5: value_5,
-        variable_6: value_6
+        variable_6: value_6,
+        variable_7: value_7
     }
 
     return payload
@@ -128,7 +136,7 @@ def post_request(payload):
 
 def main():
     payload = build_payload(
-        VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, VARIABLE_LABEL_4, VARIABLE_LABEL_5, VARIABLE_LABEL_6)
+        VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, VARIABLE_LABEL_4, VARIABLE_LABEL_5, VARIABLE_LABEL_6, VARIABLE_LABEL_7)
 
     print("[INFO] Attemping to send data")
     post_request(payload)
