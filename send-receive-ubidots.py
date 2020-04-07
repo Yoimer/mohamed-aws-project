@@ -6,7 +6,6 @@ import math
 import random
 
 # adafruit_in219 libraries
-import time
 import board
 from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
 
@@ -36,6 +35,7 @@ GPIO.setup(19,GPIO.OUT)
 try:
     api = ApiClient("BBFF-982de989b68eea12a9f5849cb1b1f8fa442")
     fan = api.get_variable('5e8a52401d8472689db0cd41')
+
 except:
     print("Can't connect to ubidots")
 
@@ -60,7 +60,6 @@ accelerometer = adafruit_adxl34x.ADXL345(i2c)
 TOKEN = "BBFF-8egaq81Nwl5g1wkivmFEFI7I2wasuh"  # Put your TOKEN here
 DEVICE_LABEL = "machine"  # Put your device label here
 
-
 VARIABLE_LABEL_1 = "Load Voltage"  # Put your first variable label here
 VARIABLE_LABEL_2 = "Current"  # Put your second variable label here
 VARIABLE_LABEL_3 = "Power"  # Put your third variable label here
@@ -68,6 +67,11 @@ VARIABLE_LABEL_4 = "Coordinate-X" # Put your fourth variable label here
 VARIABLE_LABEL_5 = "Coordinate-Y" # Put your fifth variable label here
 VARIABLE_LABEL_6 = "Coordinate-Z" # Put your sixth variable label here
 VARIABLE_LABEL_7 = "Fan State" # Put your seventh variable label here
+
+# list where fan states will be saved
+save_fan_state = []
+# first index equal minus 1
+save_fan_state.append(-1)
 
 def build_payload(variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7):
 
@@ -152,25 +156,44 @@ def post_request(payload):
     print("[INFO] request made properly, your device is updated")
     return True
 
-
 def main():
-    payload = build_payload(
-        VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, VARIABLE_LABEL_4, VARIABLE_LABEL_5, VARIABLE_LABEL_6, VARIABLE_LABEL_7)
-
-    print("[INFO] Attemping to send data")
-    post_request(payload)
-    print("[INFO] finished")
 
     # fan control section
     latest_switch_state = fan.get_values(1)
     if(latest_switch_state[0]['value'] == 1.0):
         # turn fan on
+        print("Printing save_fan_state {}".format(save_fan_state))
         print ("Turning Fan ON")
         GPIO.output(19,GPIO.HIGH)
+
+        payload = build_payload(
+            VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, VARIABLE_LABEL_4, VARIABLE_LABEL_5, VARIABLE_LABEL_6, VARIABLE_LABEL_7)
+
+        print("[INFO] Attemping to send data")
+        post_request(payload)
+        print("[INFO] finished")
+
+        # saves state to one
+        save_fan_state[0] = 1
+
     elif(latest_switch_state[0]['value'] == 0.0):
         # turn fan off
-        print ("Fan is OFF")
+        print ("Fan is OFF, waiting for activation from Ubidots")
         GPIO.output(19,GPIO.LOW)
+
+        # if previous state was one, reset to initial value and sends data for 5 seconds
+        if(save_fan_state[0] == 1):
+            save_fan_state[0] = -1
+            i = 5
+            while(i > 0):
+                payload = build_payload(
+                    VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, VARIABLE_LABEL_4, VARIABLE_LABEL_5, VARIABLE_LABEL_6, VARIABLE_LABEL_7)
+                print("Sending data for {} seconds!".format(i))
+                print("[INFO] Attemping to send data")
+                post_request(payload)
+                print("[INFO] finished")
+                time.sleep(1)
+                i = i - 1
 
 if __name__ == '__main__':
     while (True):
