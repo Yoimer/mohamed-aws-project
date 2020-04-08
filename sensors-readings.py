@@ -183,6 +183,98 @@ while True:
         f.close()
         list_to_file.clear()
 
+    ######################################## coordinates xyz
+    # date space and time utc format
+    # 2020-04-07 23:39:51.679200
+    temp = str(datetime.datetime.utcnow()) + ","
+    list_to_file.append(temp)
+
+    # coordinates
+    xyz = ("%f %f %f"%accelerometer.acceleration).split()
+
+    ######################################### coordinates x
+    temp = (xyz[0]) + "\r\n"
+    list_to_file.append(temp)
+
+    headers = "Date," + headers_list[3] + "\r\n"
+    # checks if file already exists
+    if(os.path.isfile('/home/pi/project/coordinate_x.csv')):
+        # adds only new values to file
+        f = open("coordinate_x.csv", "a+")
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
+        list_to_file.clear()
+    else:
+        # creates file including headers
+        f = open("coordinate_x.csv", "a+")
+        f.write(headers)
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
+        list_to_file.clear()
+
+    # date space and time utc format
+    # 2020-04-07 23:39:51.679200
+    temp = str(datetime.datetime.utcnow()) + ","
+    list_to_file.append(temp)
+
+    ######################################### coordinates y
+    temp = (xyz[1]) + "\r\n"
+    list_to_file.append(temp)
+
+    headers = "Date," + headers_list[4] + "\r\n"
+    # checks if file already exists
+    if(os.path.isfile('/home/pi/project/coordinate_y.csv')):
+        # adds only new values to file
+        f = open("coordinate_y.csv", "a+")
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
+        list_to_file.clear()
+    else:
+        # creates file including headers
+        f = open("coordinate_y.csv", "a+")
+        f.write(headers)
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
+        list_to_file.clear()
+
+    # date space and time utc format
+    # 2020-04-07 23:39:51.679200
+    temp = str(datetime.datetime.utcnow()) + ","
+    list_to_file.append(temp)
+
+    ######################################### coordinates z
+    temp = (xyz[2]) + "\r\n"
+    list_to_file.append(temp)
+
+    headers = "Date," + headers_list[5] + "\r\n"
+    # checks if file already exists
+    if(os.path.isfile('/home/pi/project/coordinate_z.csv')):
+        # adds only new values to file
+        f = open("coordinate_z.csv", "a+")
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
+        list_to_file.clear()
+    else:
+        # creates file including headers
+        f = open("coordinate_z.csv", "a+")
+        f.write(headers)
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
+        list_to_file.clear()
+
+
     # # day/month/year
     # temp = now.strftime("%d/%m/%Y") + ","
     # list_to_file.append(temp)
