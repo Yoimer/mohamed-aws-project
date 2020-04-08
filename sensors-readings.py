@@ -88,7 +88,7 @@ while True:
 
     headers = "Date," + headers_list[0] + "\r\n"
     # checks if file already exists
-    if(os.path.isfile('/home/pi/project/load_voltage.csv')):
+    if(os.path.isfile('/home/pi/CSVServer/csv/load_voltage.csv')):
         # adds only new values to file
         f = open("load_voltage.csv", "a+")
         for i in range(0, len(list_to_file)):
@@ -118,7 +118,7 @@ while True:
 
     headers = "Date," + headers_list[1] + "\r\n"
     # checks if file already exists
-    if(os.path.isfile('/home/pi/project/current.csv')):
+    if(os.path.isfile('/home/pi/CSVServer/csv/current.csv')):
         # adds only new values to file
         f = open("current.csv", "a+")
         for i in range(0, len(list_to_file)):
@@ -148,7 +148,7 @@ while True:
 
     headers = "Date," + headers_list[2] + "\r\n"
     # checks if file already exists
-    if(os.path.isfile('/home/pi/project/power.csv')):
+    if(os.path.isfile('/home/pi/CSVServer/csv/power.csv')):
         # adds only new values to file
         f = open("power.csv", "a+")
         for i in range(0, len(list_to_file)):
@@ -181,7 +181,7 @@ while True:
 
     headers = "Date," + headers_list[3] + "\r\n"
     # checks if file already exists
-    if(os.path.isfile('/home/pi/project/coordinate_x.csv')):
+    if(os.path.isfile('/home/pi/CSVServer/csv/coordinate_x.csv')):
         # adds only new values to file
         f = open("coordinate_x.csv", "a+")
         for i in range(0, len(list_to_file)):
@@ -210,7 +210,7 @@ while True:
 
     headers = "Date," + headers_list[4] + "\r\n"
     # checks if file already exists
-    if(os.path.isfile('/home/pi/project/coordinate_y.csv')):
+    if(os.path.isfile('/home/pi/CSVServer/csv/coordinate_y.csv')):
         # adds only new values to file
         f = open("coordinate_y.csv", "a+")
         for i in range(0, len(list_to_file)):
@@ -239,7 +239,7 @@ while True:
 
     headers = "Date," + headers_list[5] + "\r\n"
     # checks if file already exists
-    if(os.path.isfile('/home/pi/project/coordinate_z.csv')):
+    if(os.path.isfile('/home/pi/CSVServer/csv/coordinate_z.csv')):
         # adds only new values to file
         f = open("coordinate_z.csv", "a+")
         for i in range(0, len(list_to_file)):
@@ -295,7 +295,7 @@ while True:
     headers = "Date-Time,Load-Voltage(V),Current(A),Power(W),Coordinate-X,Coordinate-Y,Coordinate-Z" + "\r\n"
 
     # checks if file already exists
-    if(os.path.isfile('/home/pi/project/sensors.csv')):
+    if(os.path.isfile('/home/pi/CSVServer/csv/sensors.csv')):
         # adds only new values to file
         f = open("sensors.csv", "a+")
         for i in range(0, len(list_to_file)):
