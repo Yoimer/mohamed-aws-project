@@ -106,17 +106,14 @@ while True:
     headers = "Date," + headers_list[0] + "\r\n"
     # checks if file already exists
     if(os.path.isfile('/home/pi/project/load_voltage.csv')):
-        print("File exists")
-        time.sleep(1)
         # adds only new values to file
         f = open("load_voltage.csv", "a+")
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
             f.write(list_to_file[i])
         f.close()
+        list_to_file.clear()
     else:
-        print("File does not exist, creating")
-        time.sleep(1)
         # creates file including headers
         f = open("load_voltage.csv", "a+")
         f.write(headers)
@@ -124,31 +121,39 @@ while True:
             print(list_to_file[i])
             f.write(list_to_file[i])
         f.close()
+        list_to_file.clear()
 
     ######################################## current
-    # current
-    # temp = "{:9.6f}".format(current / 1000) + ","
-    # list_to_file.append(temp)
+    # date space and time utc format
+    # 2020-04-07 23:39:51.679200
+    temp = str(datetime.datetime.utcnow()) + ","
+    list_to_file.append(temp)
 
-    # headers = "Date," + headers_list[1] + "\r\n"
-    # # checks if file already exists
-    # if(os.path.isfile('/home/pi/current.csv')):
-    #     # adds only new values to file
-    #     f = open("current.csv", "a+")
-    #     for i in range(0, len(list_to_file)):
-    #         print(list_to_file[i])
-    #         f.write(list_to_file[i])
-    #     f.close()
-    #     list_to_file.clear()
-    # else:
-    #     # creates file including headers
-    #     f = open("current.csv", "a+")
-    #     f.write(headers)
-    #     for i in range(0, len(list_to_file)):
-    #         print(list_to_file[i])
-    #         f.write(list_to_file[i])
-    #     f.close()
-    #     list_to_file.clear()
+    # current
+    temp = "{:9.6f}".format(current / 1000) + "\r\n"
+    list_to_file.append(temp)
+
+    headers = "Date," + headers_list[1] + "\r\n"
+    # checks if file already exists
+    if(os.path.isfile('/home/pi/project/current.csv')):
+        # adds only new values to file
+        f = open("current.csv", "a+")
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
+        list_to_file.clear()
+    else:
+        # creates file including headers
+        f = open("current.csv", "a+")
+        f.write(headers)
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
+        list_to_file.clear()
+
+
 
     # # day/month/year
     # temp = now.strftime("%d/%m/%Y") + ","
