@@ -37,7 +37,6 @@ ina219.shunt_adc_resolution = ADCResolution.ADCRES_12BIT_32S
 # optional : change voltage range to 16V
 ina219.bus_voltage_range = BusVoltageRange.RANGE_16V
 
-
 # get accelerometer data
 i2c = busio.I2C(board.SCL, board.SDA)
 accelerometer = adafruit_adxl34x.ADXL345(i2c)
@@ -62,22 +61,6 @@ while True:
     print("Saving data in file, please wait...")
     time.sleep(2)
     print("")
-
-    # date,temperature
-    # 2019-11-14 00:00:00.000,51.5
-    # 2019-11-14 01:00:00.000,56.2
-    # 2019-11-14 02:00:00.000,58.3
-    # 2019-11-14 03:00:00.000,62.4
-    # 2019-11-14 04:00:00.000,66.5
-    # 2019-11-14 05:00:00.000,70.6
-    # 2019-11-14 06:00:00.000,65.7
-    # 2019-11-14 07:00:00.000,45.8
-
-    # datetime.datetime.utcnow()
-    # 2020-04-07 23:39:51.679200
-
-    # datetime object containing current date and time
-    # now = datetime.now()
 
     # saves sensor data in list
     list_to_file = []
@@ -274,62 +257,60 @@ while True:
         f.close()
         list_to_file.clear()
 
+    ######################################### sensors.csv
 
-    # # day/month/year
-    # temp = now.strftime("%d/%m/%Y") + ","
-    # list_to_file.append(temp)
+    # date space and time utc format
+    # 2020-04-07 23:39:51.679200
+    temp = str(datetime.datetime.utcnow()) + ","
+    list_to_file.append(temp)
 
-    # # hour/minute/second
-    # temp = now.strftime("%H:%M:%S") + ","
-    # list_to_file.append(temp)
+    # load voltage
+    temp = "{:6.3f}".format(12.0) + ","
+    list_to_file.append(temp)
 
-    # # load voltage
-    # temp = "{:6.3f}".format(12.0) + ","
-    # list_to_file.append(temp)
+    # current
+    temp = "{:9.6f}".format(current / 1000) + ","
+    list_to_file.append(temp)
 
-    # # current
-    # temp = "{:9.6f}".format(current / 1000) + ","
-    # list_to_file.append(temp)
+    # power
+    temp = "{:6.3f}".format((current / 1000) * 12) + ","
+    list_to_file.append(temp)
 
-    # # power
-    # temp = "{:6.3f}".format((current / 1000) * 12) + ","
-    # list_to_file.append(temp)
+    # coordinates
+    xyz = ("%f %f %f"%accelerometer.acceleration).split()
 
-    # # coordinates
-    # xyz = ("%f %f %f"%accelerometer.acceleration).split()
+    # coordinate x
+    temp = (xyz[0]) + ","
+    list_to_file.append(temp)
 
-    # # coordinate x
-    # temp = (xyz[0]) + ","
-    # list_to_file.append(temp)
+    # coordinate y
+    temp = (xyz[1]) + ","
+    list_to_file.append(temp)
 
-    # # coordinate y
-    # temp = (xyz[1]) + ","
-    # list_to_file.append(temp)
-
-    # # coordinate z
-    # temp = (xyz[2]) + "\r\n"
-    # list_to_file.append(temp)
+    # coordinate z
+    temp = (xyz[2]) + "\r\n"
+    list_to_file.append(temp)
 
     # creates sensor.csv including all the values
-    # headers = "Date,Time,Load-Voltage(V),Current(A),Power(W),Coordinate-X,Coordinate-Y,Coordinate-Z" + "\r\n"
+    headers = "Date-Time,Load-Voltage(V),Current(A),Power(W),Coordinate-X,Coordinate-Y,Coordinate-Z" + "\r\n"
 
-    # # checks if file already exists
-    # if(os.path.isfile('/home/pi/sensors.csv')):
-    #     # adds only new values to file
-    #     # print("file exists already")
-    #     f = open("sensors.csv", "a+")
-    #     for i in range(0, len(list_to_file)):
-    #         print(list_to_file[i])
-    #         f.write(list_to_file[i])
-    #     f.close()
-    # else:
-    #     # creates file including headers
-    #     # print("file does not exist")
-    #     f = open("sensors.csv", "a+")
-    #     f.write(headers)
-    #     for i in range(0, len(list_to_file)):
-    #         print(list_to_file[i])
-    #         f.write(list_to_file[i])
-    #     f.close()
+    # checks if file already exists
+    if(os.path.isfile('/home/pi/project/sensors.csv')):
+        # adds only new values to file
+        f = open("sensors.csv", "a+")
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
+        list_to_file.clear()
+    else:
+        # creates file including headers
+        f = open("sensors.csv", "a+")
+        f.write(headers)
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
+        list_to_file.clear()
 
     time.sleep(2)
