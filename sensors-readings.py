@@ -153,7 +153,35 @@ while True:
         f.close()
         list_to_file.clear()
 
+    ######################################## power
+    # date space and time utc format
+    # 2020-04-07 23:39:51.679200
+    temp = str(datetime.datetime.utcnow()) + ","
+    list_to_file.append(temp)
 
+    # # power
+    temp = "{:6.3f}".format((current / 1000) * 12) + "\r\n"
+    list_to_file.append(temp)
+
+    headers = "Date," + headers_list[2] + "\r\n"
+    # checks if file already exists
+    if(os.path.isfile('/home/pi/project/power.csv')):
+        # adds only new values to file
+        f = open("power.csv", "a+")
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
+        list_to_file.clear()
+    else:
+        # creates file including headers
+        f = open("power.csv", "a+")
+        f.write(headers)
+        for i in range(0, len(list_to_file)):
+            print(list_to_file[i])
+            f.write(list_to_file[i])
+        f.close()
+        list_to_file.clear()
 
     # # day/month/year
     # temp = now.strftime("%d/%m/%Y") + ","
