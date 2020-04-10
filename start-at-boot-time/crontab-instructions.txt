@@ -1,0 +1,6 @@
+launcher.sh path
+/home/pi
+
+crontan commands
+sudo crontab -e
+@reboot sh /home/pi/launcher.sh
