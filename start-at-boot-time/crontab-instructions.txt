@@ -1,6 +1,12 @@
 launcher.sh path
 /home/pi
 
+chmod -R 777 launcher.sh
+
 crontan commands
-sudo crontab -e
-@reboot sh /home/pi/launcher.sh
+crontab -e (no sudo)
+# @reboot sh /home/pi/launcher.sh >/home/pi/logs/cronlog 2>&1 # works
+
+@reboot python3 /home/pi/project/send-to-aws.py >/home/pi/logs/sawscronlog 2>&1
+
+@reboot python3 /home/pi/project/sensors-readings.py >/home/pi/logs/sreadingscronlog 2>&1

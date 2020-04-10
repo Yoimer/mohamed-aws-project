@@ -6,4 +6,4 @@ cd /
 
 cd home/pi/project
 
-python3 boot.py
+python3 send-receive-ubidots.py
