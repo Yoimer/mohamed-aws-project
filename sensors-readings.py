@@ -90,7 +90,7 @@ while True:
     # checks if file already exists
     if(os.path.isfile('/home/pi/CSVServer/csv/load_voltage.csv')):
         # adds only new values to file
-        f = open("load_voltage.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/load_voltage.csv", "a+")
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
             f.write(list_to_file[i])
@@ -98,7 +98,7 @@ while True:
         list_to_file.clear()
     else:
         # creates file including headers
-        f = open("load_voltage.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/load_voltage.csv", "a+")
         f.write(headers)
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
@@ -120,7 +120,7 @@ while True:
     # checks if file already exists
     if(os.path.isfile('/home/pi/CSVServer/csv/current.csv')):
         # adds only new values to file
-        f = open("current.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/current.csv", "a+")
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
             f.write(list_to_file[i])
@@ -128,7 +128,7 @@ while True:
         list_to_file.clear()
     else:
         # creates file including headers
-        f = open("current.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/current.csv", "a+")
         f.write(headers)
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
@@ -150,7 +150,7 @@ while True:
     # checks if file already exists
     if(os.path.isfile('/home/pi/CSVServer/csv/power.csv')):
         # adds only new values to file
-        f = open("power.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/power.csv", "a+")
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
             f.write(list_to_file[i])
@@ -158,7 +158,7 @@ while True:
         list_to_file.clear()
     else:
         # creates file including headers
-        f = open("power.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/power.csv", "a+")
         f.write(headers)
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
@@ -183,7 +183,7 @@ while True:
     # checks if file already exists
     if(os.path.isfile('/home/pi/CSVServer/csv/coordinate_x.csv')):
         # adds only new values to file
-        f = open("coordinate_x.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/coordinate_x.csv", "a+")
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
             f.write(list_to_file[i])
@@ -191,7 +191,7 @@ while True:
         list_to_file.clear()
     else:
         # creates file including headers
-        f = open("coordinate_x.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/coordinate_x.csv", "a+")
         f.write(headers)
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
@@ -212,7 +212,7 @@ while True:
     # checks if file already exists
     if(os.path.isfile('/home/pi/CSVServer/csv/coordinate_y.csv')):
         # adds only new values to file
-        f = open("coordinate_y.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/coordinate_y.csv", "a+")
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
             f.write(list_to_file[i])
@@ -220,7 +220,7 @@ while True:
         list_to_file.clear()
     else:
         # creates file including headers
-        f = open("coordinate_y.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/coordinate_y.csv", "a+")
         f.write(headers)
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
@@ -241,7 +241,7 @@ while True:
     # checks if file already exists
     if(os.path.isfile('/home/pi/CSVServer/csv/coordinate_z.csv')):
         # adds only new values to file
-        f = open("coordinate_z.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/coordinate_z.csv", "a+")
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
             f.write(list_to_file[i])
@@ -249,7 +249,7 @@ while True:
         list_to_file.clear()
     else:
         # creates file including headers
-        f = open("coordinate_z.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/coordinate_z.csv", "a+")
         f.write(headers)
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
@@ -297,7 +297,7 @@ while True:
     # checks if file already exists
     if(os.path.isfile('/home/pi/CSVServer/csv/sensors.csv')):
         # adds only new values to file
-        f = open("sensors.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/sensors.csv", "a+")
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
             f.write(list_to_file[i])
@@ -305,7 +305,7 @@ while True:
         list_to_file.clear()
     else:
         # creates file including headers
-        f = open("sensors.csv", "a+")
+        f = open("/home/pi/CSVServer/csv/sensors.csv", "a+")
         f.write(headers)
         for i in range(0, len(list_to_file)):
             print(list_to_file[i])
