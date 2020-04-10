@@ -71,80 +71,86 @@ while True:
     time.sleep(1)
     print("")
 
-    # if tableName does not exist already, just create it
-    if tableName not in existing_tables:
-        print("Creating table, {} please wait...".format(tableName))
-        table = dynamodb.create_table(
-            TableName=tableName,
-            KeySchema=[
-                {
-                    'AttributeName': 'time',
-                    'KeyType': 'HASH'  #Partition key
-                },
-                {
-                    'AttributeName': 'load-voltage',
-                    'KeyType': 'RANGE'  #Sort key
-                }
-            ],
-            AttributeDefinitions=[
-                {
-                    'AttributeName': 'time',
-                    'AttributeType': 'S'
-                },
-                {
-                    'AttributeName': 'load-voltage',
-                    'AttributeType': 'S'
-                },
+    current = float("{:9.6f}".format(current / 1000))
 
-            ],
-            ProvisionedThroughput={
-                'ReadCapacityUnits': 10,
-                'WriteCapacityUnits': 10
-            }
-        )
-        print("Table status:", table.table_status)
-        print("Table {} created successfully".format(tableName))
-        time.sleep(1)
-        print("Putting items on {} table, please wait...".format(tableName))
-        time.sleep(5)
-        table = dynamodb.Table(tableName)
-        # datetime object containing current date and time
-        now = datetime.now()
-        response = table.put_item(
-            Item={
-                'time': str(now.strftime("%H:%M:%S")),  # hour/minute/second
-                'current': "{:9.6f}".format(current / 1000),
-                'load-voltage': "{:6.3f}".format(12.0),
-                'power': "{:6.3f}".format((current / 1000) * 12),
-                "coordinate-x": xyz[0],
-                "coordinate-y": xyz[1],
-                "coordinate-z": xyz[2],
-                "date": str(now.strftime("%d/%m/%Y")) # day/month/year
-            }
-        )
-        print("PutItem succeeded:")
-        print(json.dumps(response, indent=4))
-    # add new values to the table
+    # if current >= 0.1 starts sending data
+    if(current >= 0.1):
+         # if tableName does not exist already, just create it
+        if tableName not in existing_tables:
+            print("Creating table, {} please wait...".format(tableName))
+            table = dynamodb.create_table(
+                TableName=tableName,
+                KeySchema=[
+                    {
+                        'AttributeName': 'time',
+                        'KeyType': 'HASH'  #Partition key
+                    },
+                    {
+                        'AttributeName': 'load-voltage',
+                        'KeyType': 'RANGE'  #Sort key
+                    }
+                ],
+                AttributeDefinitions=[
+                    {
+                        'AttributeName': 'time',
+                        'AttributeType': 'S'
+                    },
+                    {
+                        'AttributeName': 'load-voltage',
+                        'AttributeType': 'S'
+                    },
+
+                ],
+                ProvisionedThroughput={
+                    'ReadCapacityUnits': 10,
+                    'WriteCapacityUnits': 10
+                }
+            )
+            print("Table status:", table.table_status)
+            print("Table {} created successfully".format(tableName))
+            time.sleep(1)
+            print("Putting items on {} table, please wait...".format(tableName))
+            time.sleep(5)
+            table = dynamodb.Table(tableName)
+            # datetime object containing current date and time
+            now = datetime.now()
+            response = table.put_item(
+                Item={
+                    'time': str(now.strftime("%H:%M:%S")),  # hour/minute/second
+                    'current': "{:9.6f}".format(current / 1000),
+                    'load-voltage': "{:6.3f}".format(12.0),
+                    'power': "{:6.3f}".format((current / 1000) * 12),
+                    "coordinate-x": xyz[0],
+                    "coordinate-y": xyz[1],
+                    "coordinate-z": xyz[2],
+                    "date": str(now.strftime("%d/%m/%Y")) # day/month/year
+                }
+            )
+            print("PutItem succeeded:")
+            print(json.dumps(response, indent=4))
+        # add new values to the table
+        else:
+            print("Table {} already exists".format(tableName))
+            print("Putting new items on {} table, please wait...".format(tableName))
+            time.sleep(1)
+            table = dynamodb.Table(tableName)
+            # datetime object containing current date and time
+            now = datetime.now()
+            response = table.put_item(
+                Item={
+                    'time': str(now.strftime("%H:%M:%S")),  # hour/minute/second
+                    'current': "{:9.6f}".format(current / 1000),
+                    'load-voltage': "{:6.3f}".format(12.0),
+                    'power': "{:6.3f}".format((current / 1000) * 12),
+                    "coordinate-x": xyz[0],
+                    "coordinate-y": xyz[1],
+                    "coordinate-z": xyz[2],
+                    "date": str(now.strftime("%d/%m/%Y")) # day/month/year
+                }
+            )
+            print("PutItem succeeded:")
+            print(json.dumps(response, indent=4))       # sends data
     else:
-        print("Table {} already exists".format(tableName))
-        print("Putting new items on {} table, please wait...".format(tableName))
-        time.sleep(1)
-        table = dynamodb.Table(tableName)
-        # datetime object containing current date and time
-        now = datetime.now()
-        response = table.put_item(
-            Item={
-                'time': str(now.strftime("%H:%M:%S")),  # hour/minute/second
-                'current': "{:9.6f}".format(current / 1000),
-                'load-voltage': "{:6.3f}".format(12.0),
-                'power': "{:6.3f}".format((current / 1000) * 12),
-                "coordinate-x": xyz[0],
-                "coordinate-y": xyz[1],
-                "coordinate-z": xyz[2],
-                "date": str(now.strftime("%d/%m/%Y")) # day/month/year
-            }
-        )
-        print("PutItem succeeded:")
-        print(json.dumps(response, indent=4))
+        print("Fan is turned off. As long as it turns on, data will be sent to AWS Dynamo db")
 
     time.sleep(3)
