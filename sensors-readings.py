@@ -128,7 +128,25 @@ while True:
     # coordinate z
     variable_list.append((xyz[2]) + "\r\n") # 5
 
-    for i in range(0, len(variable_list)):
-        create_and_save_csv(datetime.datetime.utcnow(), variable_list[i], headers_list[i], path_list[i])
+    if(float(current >= 0.1)):
+
+        # saves state to one
+        save_fan_state[0] = 1
+
+        print("Fan is ON, saving csv files")
+        for i in range(0, len(variable_list)):
+            create_and_save_csv(datetime.datetime.utcnow(), variable_list[i], headers_list[i], path_list[i])
+    else:
+        print("Fan is turned off. As long as it turns on, system will created csv files")
+        # if previous state was one, reset to initial value and sends data for 10 seconds
+        if(save_fan_state[0] == 1):
+            save_fan_state[0] = -1
+            j = 10
+            while(j > 0):
+                print("Creating csv files for {} seconds!".format(j))
+                for i in range(0, len(variable_list)):
+                    create_and_save_csv(datetime.datetime.utcnow(), variable_list[i], headers_list[i], path_list[i])
+                time.sleep(1)
+                j = j - 1
 
     time.sleep(2)
