@@ -64,17 +64,41 @@ path_list.append("/home/pi/CSVServer/csv/coordinate_x.csv")                     
 path_list.append("/home/pi/CSVServer/csv/coordinate_y.csv")                                         # 4
 path_list.append("/home/pi/CSVServer/csv/coordinate_z.csv")                                         # 5
 
+headers_complete = "Date,Load-Voltage(V),Current(A),Power(W),Coordinate-X,Coordinate-Y,Coordinate-Z"
+path_complete = "/home/pi/CSVServer/csv/sensors.csv"
 
-def create_and_save_csv(date_and_time, measured_variable, header_in_csv, path_for_csv):
+
+# create_and_save_csv files.
+# mode I = creates files individually
+# mode C creates file complete with all the values
+
+def create_and_save_csv(date_and_time, measured_variable, header_in_csv, path_for_csv, mode, index):
 
     print("on create_and_save_csv")
 
-    # saves sensor data in list
-    list_to_file = []
+    # create individuals csv
+    if (mode == "I"):
+        # saves sensor data in list
+        list_to_file = []
+        list_to_file.append(str(date_and_time) + ",")
+        list_to_file.append(measured_variable)
+        headers = "Date," + header_in_csv + "\r\n"
 
-    list_to_file.append(str(date_and_time) + ",")
-    list_to_file.append(measured_variable)
-    headers = "Date," + header_in_csv + "\r\n"
+    # create complete csv
+    elif (mode == "C"):
+        print("mode C")
+        # saves sensor data in list
+        list_to_file = []
+
+        # adds date only in the first column
+        if (index == 0):
+            list_to_file.append(str(date_and_time) + ",")
+
+        # removes new lines and replace them by a comma except the last one
+        if (index < 5):
+            measured_variable = measured_variable.replace('\r\n', ',')
+        list_to_file.append(measured_variable)
+        headers = headers_complete + "\r\n"
 
     # checks if file already exists
     if(os.path.isfile(path_for_csv)):
@@ -135,7 +159,8 @@ while True:
 
         print("Fan is ON, saving csv files")
         for i in range(0, len(variable_list)):
-            create_and_save_csv(datetime.datetime.utcnow(), variable_list[i], headers_list[i], path_list[i])
+            create_and_save_csv(datetime.datetime.utcnow(), variable_list[i], headers_list[i], path_list[i], "I", 0)
+            create_and_save_csv(datetime.datetime.utcnow(), variable_list[i], headers_complete, path_complete, "C", i)
     else:
         print("Fan is turned off. As long as it turns on, system will created csv files")
         # if previous state was one, reset to initial value and sends data for 10 seconds
@@ -145,7 +170,8 @@ while True:
             while(j > 0):
                 print("Creating csv files for {} seconds!".format(j))
                 for i in range(0, len(variable_list)):
-                    create_and_save_csv(datetime.datetime.utcnow(), variable_list[i], headers_list[i], path_list[i])
+                    create_and_save_csv(datetime.datetime.utcnow(), variable_list[i], headers_list[i], path_list[i], "I", 0)
+                    create_and_save_csv(datetime.datetime.utcnow(), variable_list[i], headers_complete, path_complete, "C", i)
                 time.sleep(1)
                 j = j - 1
 
