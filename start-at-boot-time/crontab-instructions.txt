@@ -10,3 +10,14 @@ crontab -e (no sudo)
 @reboot python3 /home/pi/project/send-to-aws.py >/home/pi/logs/sawscronlog 2>&1
 
 @reboot python3 /home/pi/project/sensors-readings.py >/home/pi/logs/sreadingscronlog 2>&1
+
+
+################################### final commands
+@reboot python3 /home/pi/project/send-to-aws.py >/home/pi/logs/sawscronlog 2>&1
+
+@reboot python3 /home/pi/project/sensors-readings.py >/home/pi/logs/sreadingscronlog 2>&1
+
+@reboot sleep 3 && node /home/pi/CSVServer/CSVServer.js >/home/pi/logs/csvcronlog 2>&1
+
+@reboot sleep 10 && python3 /home/pi/project/send-receive-ubidots.py >/home/pi/logs/srubidots 2>&1
+
