@@ -46,6 +46,10 @@ ina219.bus_voltage_range = BusVoltageRange.RANGE_16V
 i2c = busio.I2C(board.SCL, board.SDA)
 accelerometer = adafruit_adxl34x.ADXL345(i2c)
 
+# list where fan states will be saved
+save_fan_state = []
+# first index equal minus 1
+save_fan_state.append(-1)
 
 # measure and display loop
 while True:
@@ -72,10 +76,15 @@ while True:
     print("")
 
     current = float("{:9.6f}".format(current / 1000))
+    print("Printing Current: {}".format(current))
 
     # if current >= 0.1 starts sending data
     if(current >= 0.1):
-         # if tableName does not exist already, just create it
+
+        # saves state to one
+        save_fan_state[0] = 1
+
+        # if tableName does not exist already, just create it
         if tableName not in existing_tables:
             print("Creating table, {} please wait...".format(tableName))
             table = dynamodb.create_table(
@@ -117,9 +126,9 @@ while True:
             response = table.put_item(
                 Item={
                     'time': str(now.strftime("%H:%M:%S")),  # hour/minute/second
-                    'current': "{:9.6f}".format(current / 1000),
+                    'current': str(current),
                     'load-voltage': "{:6.3f}".format(12.0),
-                    'power': "{:6.3f}".format((current / 1000) * 12),
+                    'power': str("{:6.3f}".format((current) * 12)),
                     "coordinate-x": xyz[0],
                     "coordinate-y": xyz[1],
                     "coordinate-z": xyz[2],
@@ -139,9 +148,9 @@ while True:
             response = table.put_item(
                 Item={
                     'time': str(now.strftime("%H:%M:%S")),  # hour/minute/second
-                    'current': "{:9.6f}".format(current / 1000),
+                    'current': str(current),
                     'load-voltage': "{:6.3f}".format(12.0),
-                    'power': "{:6.3f}".format((current / 1000) * 12),
+                    'power': str("{:6.3f}".format((current) * 12)),
                     "coordinate-x": xyz[0],
                     "coordinate-y": xyz[1],
                     "coordinate-z": xyz[2],
@@ -152,5 +161,33 @@ while True:
             print(json.dumps(response, indent=4))       # sends data
     else:
         print("Fan is turned off. As long as it turns on, data will be sent to AWS Dynamo db")
+        
+        # if previous state was one, reset to initial value and sends data for 10 seconds
+        if(save_fan_state[0] == 1):
+            save_fan_state[0] = -1
+            j = 10
+            while(j > 0):
+                print("Savind data in AWS for {} seconds!".format(j))
+                print("Table {} already exists".format(tableName))
+                print("Putting new items on {} table, please wait...".format(tableName))
+                table = dynamodb.Table(tableName)
+                # datetime object containing current date and time
+                now = datetime.now()
+                response = table.put_item(
+                    Item={
+                        'time': str(now.strftime("%H:%M:%S")),  # hour/minute/second
+                        'current': str(current),
+                        'load-voltage': "{:6.3f}".format(12.0),
+                        'power': str("{:6.3f}".format((current) * 12)),
+                        "coordinate-x": xyz[0],
+                        "coordinate-y": xyz[1],
+                        "coordinate-z": xyz[2],
+                        "date": str(now.strftime("%d/%m/%Y")) # day/month/year
+                    }
+                )
+                print("PutItem succeeded:")
+                print(json.dumps(response, indent=4))       # sends data
+                time.sleep(1)
+                j = j - 1
 
     time.sleep(3)
